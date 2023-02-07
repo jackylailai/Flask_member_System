@@ -73,6 +73,37 @@ def member():
         return render_template("/member.html")
     else:
         return redirect("/")
+@app.route("/article" ,methods=["POST"])
+def article():
+    email = request.form["email"]
+    title = request.form["title"]
+    content = request.form["content"]
+    collection = db.users
+    
+    collection.insert_one({
+        "email" : email,
+        "title" : title,
+        "content" : content
+    })
+    title2 = collection.find_one({
+        "title" : title
+    })
+    v1 = (title2["title"],title2["content"])
+    
+    
+    
+    return v1
+# @app.route("/new_article")
+# def new_article():
+#     if "email" in session:
+#         collection = db.users
+#         result = collection.find_one({
+#             "title" : title
+#         })
+#         return render_template("article.html",article=article,content=content)
+    
+
+    
 #/error?msg=錯誤訊息
 @app.route("/error")
 def error():
