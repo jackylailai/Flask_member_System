@@ -7,15 +7,18 @@
     <title>會員系統</title>
 </head>
 <body>
-    <h3>歡迎光臨小小部落格</h3>
-    <p>註冊在此</p>
+    <h3>歡迎光臨小小部落格</h3><br>
+    <h4>註冊在此</h4><br>
     <form action="/signup" method="POST"><!--記得method沒有s-->
         暱稱<input type="text" name="name"/><br>
+        <br>
         email<input type="text" name="email"/><br><!--n參數名稱 -->
+        <br>
         密碼<input type="password" name="password"/><br>
+        <br>
         <button>註冊</button>
     </form>
-    
+    <hr/>
     <a href="/signin2">我可以直接登入囉！</a>
     
 </body>

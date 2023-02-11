@@ -74,33 +74,38 @@ def member():
     else:
         return redirect("/")
 @app.route("/article" ,methods=["POST"])
-def article():
-    email = request.form["email"]
-    title = request.form["title"]
-    content = request.form["content"]
-    collection = db.users
-    
-    collection.insert_one({
-        "email" : email,
-        "title" : title,
-        "content" : content
-    })
-    title2 = collection.find_one({
-        "title" : title
-    })
-    v1 = (title2["title"],title2["content"])
-    
-    
-    
-    return v1
-# @app.route("/new_article")
-# def new_article():
-#     if "email" in session:
-#         collection = db.users
-#         result = collection.find_one({
-#             "title" : title
-#         })
-#         return render_template("article.html",article=article,content=content)
+def create_article():
+    if "email" in session:
+        email = session["email"]
+        title = request.form["title"]
+        content = request.form["content"]
+        collection = db.article
+        
+        collection.insert_one({
+            "email" : email,
+            "title" : title,
+            "content" : content
+        })
+
+        return render_template("/article.html",title=title,content=content)
+    else:
+        return redirect("/")       
+@app.route("/view_article")
+def view_article():
+    if "email" in session:
+        email = session["email"]
+        collection = db.article
+        result= collection.find({
+            "email" : email
+
+        })
+        for x in result:
+            content = x["content"]
+            title = x["title"]
+            print(title,content)
+        # content = result["content"]
+        # title = result["title"]
+        return render_template("/article.html",title=title,content=content)
     
 
     
@@ -113,6 +118,7 @@ def error():
 def signin2():
     return render_template("signin2.html")
 if __name__ =="__main__":#如果以主程式執行，如果把app.py當成主程式來運作
+    app.debug = True
     app.run()
 
 #先使用python 不要用python3
