@@ -7,6 +7,8 @@ from flask import redirect
 from flask import session
 import os
 from dotenv import load_dotenv
+import json
+import jinja2
 load_dotenv()#呼叫 load_dotenv() 載入 .env 檔
 
 root = os.getenv("root")#讀取 .env 檔中，Key 為 SERVER_IP 的值
@@ -99,14 +101,43 @@ def view_article():
             "email" : email
 
         })
+        title=[]
+        content=[]
         for x in result:
-            content = x["content"]
-            title = x["title"]
+            content.append(x["content"])
+            title.append(x["title"])
             print(title,content)
         # content = result["content"]
         # title = result["title"]
-        return render_template("/article.html",title=title,content=content)
-    
+        # return render_template("/article.html",title=title,content=content)
+        return json.dumps(dict(title=title,content=content))
+@app.route("/modify",methods=["POST"])
+def modify_article():
+    if "email" in session:
+        email = session["email"]
+        title = request.form["title"]
+        modify_title=request.form["motitle"]
+        content= request.form["content"]
+        
+        collection = db.article
+        collection.replace_one({
+            "title" : title
+        },{
+            "email" : email,
+            "title" : modify_title,
+            "content":content
+            })#upsert?
+        return "更動完成"
+@app.route("/delete",methods=["POST"])
+def delete_article():
+    if "email" in session:
+        
+        title = request.form["title"]
+        collection = db.article
+        collection.delete_one({
+            "title" : title
+        })
+        return "刪除完成"       
 
     
 #/error?msg=錯誤訊息
@@ -117,6 +148,17 @@ def error():
 @app.route("/signin2")
 def signin2():
     return render_template("signin2.html")
+
+@app.route("/mo")
+def mo():
+    return render_template("modify.html")
+@app.route("/de")
+def de():
+    return render_template("delete.html")
+
+
+
+
 if __name__ =="__main__":#如果以主程式執行，如果把app.py當成主程式來運作
     app.debug = True
     app.run()
