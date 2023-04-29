@@ -5,11 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>會員系統</title>
-    <style>body{text-align: center}</style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css' ,static_url_path='/static_files') }}">
+    <meta name="google-signin-client_id" content={{google_oauth2_client_id}}>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+
+
 </head>
 <body>
     <h3>歡迎光臨小小部落格</h3><br>
-    <h4 style="font-size:125%;color:rgb(37, 135, 78);">註冊在此</h4><br>
+    <h4>註冊在此</h4><br>
     <form action="/signup" method="POST" valign="center"><!--記得method沒有s-->
         暱稱<input type="text" name="name"/><br>
         <br>
@@ -17,10 +22,37 @@
         <br>
         密碼<input type="password" name="password"/><br>
         <br>
-        <button style="width:120px;height:40px;font-size:150%;color:rgb(37, 135, 78);">註冊</button>
+        <div class="button-group">
+        <button class="signup" type="submit" style="font-size:16px;padding: 10px;display: inline-block;  display: flex;
+        justify-content: center;
+        align-items: center;">註冊</button>
+        <div class="g-signin2" data-onsuccess="onSignIn" style="text-align:justify center;display: inline-block;margin-left: 30px;  display: flex;
+        justify-content: center;
+        align-items: center;"></div>
+        </div>
     </form>
     <hr/>
     <a href="/signin2">我可以直接登入囉！</a>
-    
+    <script>
+        function onSignIn(googleUser) {
+          var id_token = googleUser.getAuthResponse().id_token;
+          var profile = googleUser.getBasicProfile();
+          console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+          console.log('Name: ' + profile.getName());
+          console.log('Image URL: ' + profile.getImageUrl());
+          console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+          $.ajax({
+            type: "POST",
+            url: '/google_sign_in',
+            data: JSON.stringify({'id_token': id_token}),
+            success: function() {
+              console.log('login success')
+            },
+            dataType: 'json',
+            contentType:"application/json",
+          });
+        }
+      </script>
+    <!-- <script type="text/javascript" src="{{ url_for('static', filename='js/index.js' ,static_url_path='/static_file') }}"></script> -->
 </body>
 </html>

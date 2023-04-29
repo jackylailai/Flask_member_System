@@ -5,7 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>會員系統</title>
-    <style>body{text-align: center}</style>
+    <style>
+    body{text-align: center}
+    #view-articles-button[disabled] {
+        color: gray;
+        background-color: lightgray;
+        cursor: not-allowed;
+        }
+    </style>
 </head>
 <body>
     <h3>會員天地</h3>
@@ -22,5 +29,42 @@
     <a class="link" href="/view_article">看我的文章</a><br>
     <a class="link" href="/mo">更改我的文章內容</a>><br>
     <a class="link" href="/de">刪除我的文章內容</a>><br>
+    <p>
+        直接拉入文檔在此
+    </p>
+    <button id="view-articles-button" >View Articles</button>
+    <div id="article-list"></div>
+    <script>
+    const viewArticlesButton = document.getElementById('view-articles-button');
+
+    viewArticlesButton.addEventListener('click', () => {
+    // 禁用按鈕
+    viewArticlesButton.disabled = true;
+    // 加入CSS類
+    viewArticlesButton.classList.add('disabled');
+    
+    // 從後端獲取文章資料
+    fetch('/view2_article')
+        .then(response => response.json())
+        .then(data => {
+        // 解析資料並將其填充到文章列表中
+        let articleList = document.getElementById('article-list');
+        data.forEach(article => {
+            let articleDiv = document.createElement('div');
+            articleDiv.innerHTML = `
+            <h2>${article.title}</h2>
+            <p>${article.content}</p>
+            `;
+            articleList.appendChild(articleDiv);
+        });
+        // // 啟用按鈕
+        // viewArticlesButton.disabled = false;
+        // // 移除CSS類
+        // viewArticlesButton.classList.remove('disabled');
+        });
+    });
+
+
+      </script>
 </body>
 </html>

@@ -8,15 +8,16 @@ from flask import session
 import os
 from dotenv import load_dotenv
 import json
+from flask import jsonify
 import jinja2
 load_dotenv()#呼叫 load_dotenv() 載入 .env 檔
-
+GOOGLE_OAUTH2_CLIENT_ID = os.getenv("GOOGLE_OAUTH2_CLIENT_ID")
 root = os.getenv("root")#讀取 .env 檔中，Key 為 SERVER_IP 的值
 print(root)
 
 app = Flask(
     __name__,
-    static_folder="public",#靜態檔案的資料夾名稱
+    static_folder="static",#靜態檔案的資料夾名稱
     static_url_path="/"#靜態檔案對應的網址路徑
     )# __name__ 代表目前執行的模組
 
@@ -29,7 +30,7 @@ app.secret_key="key value"
 
 @app.route("/") #裝飾：以函式為基礎，提供附加功能
 def home():
-    return render_template("index.html")
+    return render_template("index.html", google_oauth2_client_id=GOOGLE_OAUTH2_CLIENT_ID)
 
 @app.route("/signup",methods=["POST"])#method+s
 def signup():
@@ -101,16 +102,40 @@ def view_article():
             "email" : email
 
         })
-        title=[]
-        content=[]
-        for x in result:
-            content.append(x["content"])
-            title.append(x["title"])
-            print(title,content)
+        articles = []
+        for article in result:
+            articles.append({
+                "title": article["title"],
+                "content": article["content"]
+                            })
+        return render_template("view_article.html", articles=articles)
+        # return json.dumps({"articles": articles})
+        # title=[]
+        # content=[]
+        # for x in result:
+        #     content.append(x["content"])
+        #     title.append(x["title"])
+        #     print(title,content)
+            
         # content = result["content"]
         # title = result["title"]
         # return render_template("/article.html",title=title,content=content)
-        return json.dumps(dict(title=title,content=content))
+        # return json.dumps(dict(title=title,content=content))
+@app.route("/view2_article")
+def view2_article():
+    if "email" in session:
+        email = session["email"]
+        collection = db.article
+        result = collection.find({"email": email})
+        articles = []
+        for x in result:
+            articles.append({
+                "title": x["title"],
+                "content": x["content"]
+            })
+        return jsonify(articles)
+    else:
+        return redirect("/")
 @app.route("/modify",methods=["POST"])
 def modify_article():
     if "email" in session:

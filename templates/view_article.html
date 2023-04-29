@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>view_article</title>
+</head>
+<body>
+    {% for article in articles %}
+    
+    <h1>{{ article.title }}</h1>
+    <p>{{ article.content }}</p>
+    {% endfor %}  
+    <!-- <h1>View Articles</h1>
+    <div id="articles"></div>
+    <script>
+      fetch('/view_article')
+        .then(response => response.json())
+        .then(data => {
+          let articlesDiv = document.getElementById('articles');
+          for (let i = 0; i < data.title.length; i++) {
+            let title = data.title[i];
+            let content = data.content[i];
+            let articleDiv = document.createElement('div');
+            articleDiv.innerHTML = `<h2>${title}</h2><p>${content}</p>`;
+            articlesDiv.appendChild(articleDiv);
+          }
+        })
+        .catch(error => console.error(error));
+    </script> -->
+  
+</body>
+</html>

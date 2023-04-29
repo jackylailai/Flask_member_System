@@ -7,14 +7,34 @@
     <title>文章</title>
 </head>
 <body>
-    
+    <!-- {% for i in range(title|length) %}
+    <h3>{{ title[i] }}</h3>
+    <p>{{ content[i] }}</p>
+    {% endfor %} -->
+
     <h1>文章標題</h1>
-    <p>{{title}}</p>
-        
-        <h3>文章內容</h3>
-        <p>{{content}}</p>
-        
-   
+    <p>{{title}}</p>   
+    <h3>文章內容</h3>
+    <p>{{content}}</p>
+    <div>
+        <h1 id="article-title"></h1>
+        <p id="article-content"></p>
+    </div>    
+<!-- <script>
+    fetch('/view_article')
+  .then(response => response.json())
+  .then(data => {
+    // 取得文章標題和內容
+    const title = data.title;
+    const content = data.content;
+    // 在HTML中顯示標題和內容
+    const titleElement = document.getElementById('article-title');
+    const contentElement = document.getElementById('article-content');
+    titleElement.textContent = title;
+    contentElement.textContent = content;
+  });
+
+</script> -->
     
 </body>
 </html>
